@@ -146,6 +146,28 @@
 <script>
 let globalTranscriptData = null; // Global variable to store the loaded data
 
+// Function to load JSON from URL
+function loadJsonFromUrl(url) {
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            globalTranscriptData = data; // Store the loaded data globally
+            displayTranscript(globalTranscriptData);
+        })
+        .catch(error => {
+            console.error("Error fetching JSON: ", error);
+            globalTranscriptData = null; // Reset global data on error
+            document.getElementById('transcriptDisplay').innerHTML = '<p>Error loading transcript.</p>';
+        });
+}
+
+// Check if URL parameter for JSON is provided
+const params = new URLSearchParams(window.location.search);
+const jsonUrl = params.get('jsonUrl');
+if (jsonUrl) {
+    loadJsonFromUrl(jsonUrl);
+}
+
 document.getElementById('uploadJson').addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (file) {
@@ -231,7 +253,6 @@ function displayTranscript(data) {
     });
 }
 </script>
-
 
 </body>
 </html>
