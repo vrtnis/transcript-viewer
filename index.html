@@ -121,6 +121,16 @@
     <span class="slider round"></span>
 </label> Dark Mode
 
+<label class="switch">
+    <input type="checkbox" id="showFullText">
+    <span class="slider round"></span>
+</label> Show Full Text
+
+<label class="switch">
+    <input type="checkbox" id="showTimeData" checked>
+    <span class="slider round"></span>
+</label> Show Time Data
+
 <input type="range" min="12" max="24" value="16" class="font-slider" id="fontSize"> Font Size
 
 <select id="fontFamily">
@@ -134,12 +144,12 @@
 <div id="transcriptDisplay"></div>
 
 <label class="switch">
-    <input type="checkbox" id="showFullText" checked>
+    <input type="checkbox" id="showFullTextBottom">
     <span class="slider round"></span>
 </label> Show Full Text
 
 <label class="switch">
-    <input type="checkbox" id="showTimeData" checked>
+    <input type="checkbox" id="showTimeDataBottom" checked>
     <span class="slider round"></span>
 </label> Show Time Data
 
@@ -188,12 +198,28 @@ document.getElementById('uploadJson').addEventListener('change', function(event)
 });
 
 document.getElementById('showFullText').addEventListener('change', function() {
+    document.getElementById('showFullTextBottom').checked = this.checked;
+    if (globalTranscriptData) {
+        displayTranscript(globalTranscriptData); // Re-display the transcript using global data
+    }
+});
+
+document.getElementById('showFullTextBottom').addEventListener('change', function() {
+    document.getElementById('showFullText').checked = this.checked;
     if (globalTranscriptData) {
         displayTranscript(globalTranscriptData); // Re-display the transcript using global data
     }
 });
 
 document.getElementById('showTimeData').addEventListener('change', function() {
+    document.getElementById('showTimeDataBottom').checked = this.checked;
+    if (globalTranscriptData) {
+        displayTranscript(globalTranscriptData); // Re-display the transcript using global data
+    }
+});
+
+document.getElementById('showTimeDataBottom').addEventListener('change', function() {
+    document.getElementById('showTimeData').checked = this.checked;
     if (globalTranscriptData) {
         displayTranscript(globalTranscriptData); // Re-display the transcript using global data
     }
@@ -221,7 +247,8 @@ function displayTranscript(data) {
     container.innerHTML = ''; // Clear previous content
 
     // Check if the full text should be displayed
-    if (document.getElementById('showFullText').checked) {
+    const showFullText = document.getElementById('showFullText').checked || document.getElementById('showFullTextBottom').checked;
+    if (showFullText) {
         const fullTranscript = data.results.transcripts[0].transcript;
         const fullTranscriptPara = document.createElement('p');
         fullTranscriptPara.textContent = fullTranscript;
@@ -235,7 +262,8 @@ function displayTranscript(data) {
         let segmentText = `<span class="${speakerClass}">${segment.speaker_label}</span>`;
 
         // Check if the time data should be displayed
-        if (document.getElementById('showTimeData').checked) {
+        const showTimeData = document.getElementById('showTimeData').checked || document.getElementById('showTimeDataBottom').checked;
+        if (showTimeData) {
             segmentText += `<span class="time-data">, from ${segment.start_time} to ${segment.end_time}:</span> `;
         } else {
             segmentText += `: `;
