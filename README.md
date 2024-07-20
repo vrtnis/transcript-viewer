@@ -11,3 +11,7 @@ This project is a simple web application to display transcripts with customizabl
 - **Time Data Display**: Option to show or hide the time data for each transcript segment.
 - **JSON Upload**: Upload a JSON file containing the transcript data to be displayed.
 
+## Try it out
+
+[https://vrtnis.github.io/transcript-viewer/](https://vrtnis.github.io/transcript-viewer/)
+
