@@ -112,6 +112,10 @@
     body.dark-mode input:checked + .slider {
         background-color: #4CAF50; /* Green toggle for active state */
     }
+
+    .highlight {
+        background-color: yellow;
+    }
     </style>
 </head>
 <body>
@@ -171,9 +175,10 @@ function loadJsonFromUrl(url) {
         });
 }
 
-// Check if URL parameter for JSON is provided
+// Check if URL parameter for JSON and timestamp are provided
 const params = new URLSearchParams(window.location.search);
 const jsonUrl = params.get('jsonUrl');
+const timestamp = parseFloat(params.get('timestamp'));
 if (jsonUrl) {
     loadJsonFromUrl(jsonUrl);
 }
@@ -255,6 +260,9 @@ function displayTranscript(data) {
         container.appendChild(fullTranscriptPara);
     }
 
+    let closestSegment = null;
+    let closestTimeDiff = Infinity;
+
     // Loop through segments and display them
     data.results.speaker_labels.segments.forEach((segment) => {
         const segmentPara = document.createElement('p');
@@ -278,7 +286,23 @@ function displayTranscript(data) {
 
         segmentPara.innerHTML = segmentText; // Use innerHTML to render the span with class
         container.appendChild(segmentPara);
+
+        // Find the segment closest to the given timestamp
+        const startTime = parseFloat(segment.start_time);
+        const endTime = parseFloat(segment.end_time);
+        const timeDiff = Math.min(Math.abs(timestamp - startTime), Math.abs(timestamp - endTime));
+
+        if (timeDiff < closestTimeDiff) {
+            closestTimeDiff = timeDiff;
+            closestSegment = segmentPara;
+        }
     });
+
+    // Highlight and scroll to the closest segment
+    if (closestSegment) {
+        closestSegment.classList.add('highlight');
+        closestSegment.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 </script>
 
